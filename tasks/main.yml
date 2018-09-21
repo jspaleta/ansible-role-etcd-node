@@ -1,0 +1,8 @@
+- set_fact: role_etcd_node=yes
+  tags: always
+- include: install-etcd.yml
+  tags: install-etcd
+- include: generate-certs.yml
+  tags: generate-certs
+- include: configure-services.yml
+  tags: configure-services

@@ -1,0 +1,7 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: Install dependencies
+    command: ansible-galaxy install -r /vagrant/tests/requirements.yml -p /etc/ansible/roles
+  - name: Link role
+    file: src=/vagrant/ dest=/etc/ansible/roles/etcd-node state=link

@@ -1,0 +1,8 @@
+- hosts: ca
+  become: yes
+  roles:
+  - jumperfly.ca
+- hosts: etcd*
+  become: yes
+  roles:
+  - etcd-node

@@ -1,0 +1,31 @@
+- name: Ensure etcd group exists
+  group: name=etcd system=true state=present
+- name: Ensure etcd user exists
+  user: name=etcd group=etcd home=/var/lib/etcd system=yes
+- name: Download etcd
+  get_url:
+    url: https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/{{ etcd_archive }}
+    dest: /opt/{{ etcd_archive }}
+    checksum: "{{ etcd_archive_checksum }}"
+  register: download_etcd
+- name: Extract etcd
+  unarchive:
+    src: /opt/{{ etcd_archive }}
+    dest: /opt/
+    remote_src: yes
+  when: download_etcd.changed
+- name: Create symlinks
+  file:
+    src: /opt/{{ etcd_base_name }}/{{ item }}
+    dest: /usr/local/bin/{{ item }}
+    state: link
+  with_items:
+    - etcd
+    - etcdctl
+- name: Create conf directory
+  file: path=/etc/etcd state=directory
+- name: Create configuration file
+  template:
+    src: etcd-cluster.conf
+    dest: /etc/etcd/etcd.conf
+  tags: etcd-config

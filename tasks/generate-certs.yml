@@ -1,0 +1,37 @@
+- name: Check if private key exists
+  stat: path={{ etcd_private_key }}
+  register: key_result
+- name: Generate private key
+  command: openssl genrsa -out {{ etcd_private_key }} 2048
+  when: not key_result.stat.exists and not key_result.stat.exists
+- name: Set private key owner and permissions
+  file: path={{ etcd_private_key }} owner=etcd mode=0600
+
+- name: Read CA cert from ca host
+  slurp: src={{ ca_host_cert }}
+  delegate_to: "{{ ca_host }}"
+  run_once: true
+  register: ca_cert_result
+- name: Save CA cert
+  copy: content={{ ca_cert_result.content | b64decode }} dest={{ etcd_ca_cert }}
+
+- name: Check if certificate exists
+  stat: path={{ etcd_cert }}
+  register: cert_result
+- name: Create certificate (block)
+  block:
+  - name: Create CSR
+    command: >
+      openssl req -new -key {{ etcd_private_key }}
+      -subj '/CN={{ etcd_hostname }}/C={{ etcd_cert_country }}/O={{ ca_organization_name }}/OU={{ etcd_cert_organizational_unit_name }}/L={{ etcd_cert_city }}/ST={{ etcd_cert_state }}'
+    register: csr_result
+  - name: Save CSR on ca host
+    copy: content={{ csr_result.stdout }} dest=/tmp/{{ etcd_hostname }}.csr
+    delegate_to: "{{ ca_host }}"
+  - name: Create certificate
+    shell: openssl ca -batch -config {{ ca_dir }}/openssl.cnf -infiles /tmp/{{ etcd_hostname }}.csr
+    delegate_to: "{{ ca_host }}"
+    register: create_cert_result
+  - name: Save certificate
+    copy: content={{ create_cert_result.stdout }} dest={{ etcd_cert }}
+  when: not cert_result.stat.exists
