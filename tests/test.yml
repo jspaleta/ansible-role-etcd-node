@@ -2,7 +2,7 @@
   become: yes
   roles:
   - jumperfly.ca
-- hosts: etcd*
+- hosts: etcd_nodes
   become: yes
   roles:
-  - etcd-node
+  - etcd_node

@@ -10,11 +10,14 @@ $node_memory = 256
 $ip_prefix = "192.168.99"
 
 host_vars = {}
+etcd_nodes = []
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "centos/7"
+  config.vm.box = "jumperfly/centos-7"
+  config.vm.box_check_update = false
+  config.hostmanager.include_offline = true
+  config.vm.provision :hostmanager
   config.ssh.insert_key = false
-  config.hostmanager.enabled = true
 
   config.vm.define "ca" do |config|
     config.vm.provider "virtualbox" do |v|
@@ -26,6 +29,7 @@ Vagrant.configure("2") do |config|
 
   (1..$node_count).each do |i|
     config.vm.define vm_name = "etcd#{i}" do |config|
+      etcd_nodes << vm_name
       config.vm.provider "virtualbox" do |v|
         v.memory = $node_memory
         v.cpus = 1
@@ -37,6 +41,7 @@ Vagrant.configure("2") do |config|
         "ip": ip
       }
       if i == $node_count
+        config.vm.box = "jumperfly/centos-7-ansible"
         config.vm.provision "shell", privileged: false, inline: "cp /vagrant/vagrant_insecure_key /home/vagrant/.ssh/id_rsa && chmod 600 /home/vagrant/.ssh/id_rsa"
         config.vm.provision "ansible_local" do |ansible|
           ansible.compatibility_mode = "2.0"
@@ -47,6 +52,9 @@ Vagrant.configure("2") do |config|
           ansible.limit = "all"
           ansible.playbook = "tests/test.yml"
           ansible.host_vars = host_vars
+          ansible.groups = {
+            "etcd_nodes": etcd_nodes
+          }
         end
       end
     end
