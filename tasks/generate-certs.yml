@@ -23,7 +23,7 @@
   - name: Create CSR
     command: >
       openssl req -new -key {{ etcd_private_key }}
-      -subj '/CN={{ etcd_hostname }}/C={{ etcd_cert_country }}/O={{ ca_organization_name }}/OU={{ etcd_cert_organizational_unit_name }}/L={{ etcd_cert_city }}/ST={{ etcd_cert_state }}'
+      -subj '/CN={{ etcd_hostname }}/C={{ etcd_cert_country }}/O={{ etcd_cert_organization_name }}/OU={{ etcd_cert_organizational_unit_name }}/L={{ etcd_cert_city }}/ST={{ etcd_cert_state }}'
     register: csr_result
   - name: Save CSR on ca host
     copy: content={{ csr_result.stdout }} dest=/tmp/{{ etcd_hostname }}.csr

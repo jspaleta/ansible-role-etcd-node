@@ -8,3 +8,5 @@
   when: create_service.changed
 - name: Ensure etcd service is running
   service: name=etcd state=started
+- name: Ensure etcd service is enabled
+  service: name=etcd enabled=yes

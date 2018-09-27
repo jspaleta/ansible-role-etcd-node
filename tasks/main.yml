@@ -1,4 +1,4 @@
-- set_fact: role_etcd_node=yes
+- set_fact: etcd_hostname={{ etcd_hostname }}
   tags: always
 - include: install-etcd.yml
   tags: install-etcd

@@ -4,4 +4,4 @@
   - name: Install dependencies
     command: ansible-galaxy install -r /vagrant/tests/requirements.yml -p /etc/ansible/roles
   - name: Link role
-    file: src=/vagrant/ dest=/etc/ansible/roles/etcd-node state=link
+    file: src=/vagrant/ dest=/etc/ansible/roles/etcd_node state=link
