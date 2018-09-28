@@ -26,6 +26,6 @@
   file: path=/etc/etcd state=directory
 - name: Create configuration file
   template:
-    src: etcd-cluster.conf
+    src: "{{ 'etcd-cluster.conf' if groups[etcd_ansible_group]|length > 1 else 'etcd-single.conf' }}"
     dest: /etc/etcd/etcd.conf
   tags: etcd-config
