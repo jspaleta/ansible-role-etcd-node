@@ -17,20 +17,26 @@ ETCD_NAME="{{ etcd_hostname }}"
 #ETCD_GRPC_KEEPALIVE_TIMEOUT="20s"
 #
 #[Clustering]
+{% if etcd_single_node %}
+#ETCD_INITIAL_ADVERTISE_PEER_URLS=""
+#ETCD_INITIAL_CLUSTER=""
+#ETCD_INITIAL_CLUSTER_STATE="new"
+{% else %}
 ETCD_INITIAL_ADVERTISE_PEER_URLS="{{ etcd_protocol }}://{{ etcd_hostname }}:2380"
-ETCD_ADVERTISE_CLIENT_URLS="{{ etcd_protocol }}://{{ etcd_hostname }}:2379"
-#ETCD_DISCOVERY=""
-#ETCD_DISCOVERY_FALLBACK="proxy"
-#ETCD_DISCOVERY_PROXY=""
-#ETCD_DISCOVERY_SRV=""
 ETCD_INITIAL_CLUSTER="
   {%- for h in groups[etcd_ansible_group] -%}
     {{ h }}={{ etcd_protocol }}://{{ h }}:2380
     {%- if not loop.last %},{% endif %}
   {%- endfor -%}
 "
-#ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
+{% endif %}
+ETCD_ADVERTISE_CLIENT_URLS="{{ etcd_protocol }}://{{ etcd_hostname }}:2379"
+#ETCD_DISCOVERY=""
+#ETCD_DISCOVERY_FALLBACK="proxy"
+#ETCD_DISCOVERY_PROXY=""
+#ETCD_DISCOVERY_SRV=""
+#ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 #ETCD_STRICT_RECONFIG_CHECK="true"
 #ETCD_ENABLE_V2="true"
 #

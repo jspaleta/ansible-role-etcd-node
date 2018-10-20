@@ -30,3 +30,4 @@ etcd_cert_organizational_unit_name: etcd
 
 # Derived configuration
 etcd_protocol: "{{ 'https' if etcd_ssl_enabled else 'http' }}"
+etcd_single_node: "{{ groups[etcd_ansible_group]|length <= 1 }}"
