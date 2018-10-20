@@ -1,7 +1,8 @@
 - hosts: ca
   become: yes
   roles:
-  - jumperfly.ca
+  - role: jumperfly.ca
+    when: etcd_ssl_enabled | default(true)
 - hosts: etcd_nodes
   become: yes
   roles:

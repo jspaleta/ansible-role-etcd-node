@@ -1,21 +1,32 @@
+# General configuration
 etcd_version: 3.2.18
-etcd_archive_checksum: sha256:b729db0732448064271ea6fdcb901773c4fe917763ca07776f22d0e5e0bd4097
 etcd_ansible_group: etcd_nodes
+etcd_ssl_enabled: yes
+etcd_pod_install: no
+
+# Service configuration
 etcd_client_listen_ip: "{{ ip }}"
 etcd_peer_listen_ip: "{{ ip }}"
+etcd_hostname: "{{ ansible_hostname }}"
+
+# Local installation configuration
+etcd_archive_checksum: sha256:b729db0732448064271ea6fdcb901773c4fe917763ca07776f22d0e5e0bd4097
 etcd_base_name: etcd-v{{ etcd_version }}-linux-amd64
 etcd_archive: "{{ etcd_base_name }}.tar.gz"
-etcd_hostname: "{{ ansible_hostname }}"
-etcd_private_key: /etc/etcd/{{ etcd_hostname }}-key.pem
-etcd_cert: /etc/etcd/{{ etcd_hostname }}.crt
-etcd_ca_cert: /etc/etcd/ca.crt
 
+# SSL configuration
 ca_host: ca
 ca_dir: /etc/pki/CA/intermediate
 ca_host_cert: "{{ ca_dir }}/certs/intermediate-chain.crt"
 
+etcd_private_key: /etc/etcd/{{ etcd_hostname }}-key.pem
+etcd_cert: /etc/etcd/{{ etcd_hostname }}.crt
+etcd_ca_cert: /etc/etcd/ca.crt
 etcd_cert_country: GB
 etcd_cert_city: London
 etcd_cert_state: Greater London
 etcd_cert_organization_name: Ansible Certificate Authority
 etcd_cert_organizational_unit_name: etcd
+
+# Derived configuration
+etcd_protocol: "{{ 'https' if etcd_ssl_enabled else 'http' }}"

@@ -3,6 +3,7 @@
 - include: install-etcd.yml
   tags: install-etcd
 - include: generate-certs.yml
+  when: etcd_ssl_enabled
   tags: generate-certs
 - include: configure-services.yml
   tags: configure-services
