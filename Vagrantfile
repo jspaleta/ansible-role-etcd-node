@@ -43,10 +43,11 @@ Vagrant.configure("2") do |config|
       if i == $node_count
         config.vm.box = "jumperfly/centos-7-ansible"
         config.vm.provision "shell", privileged: false, inline: "cp /vagrant/vagrant_insecure_key /home/vagrant/.ssh/id_rsa && chmod 600 /home/vagrant/.ssh/id_rsa"
-        config.vm.provision "ansible_local" do |ansible|
-          ansible.compatibility_mode = "2.0"
-          ansible.playbook = "tests/vagrant-deps.yml"
-        end
+        config.vm.provision "shell", inline: <<-SHELL
+          mkdir -p /etc/ansible/roles
+          ln -snf /vagrant/ /etc/ansible/roles/etcd_node
+          ansible-galaxy install --ignore-errors -r /vagrant/tests/requirements.yml -p /etc/ansible/roles
+        SHELL
         config.vm.provision "ansible_local" do |ansible|
           ansible.compatibility_mode = "2.0"
           ansible.limit = "all"
