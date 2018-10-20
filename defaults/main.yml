@@ -1,5 +1,5 @@
 # General configuration
-etcd_version: 3.2.18
+etcd_version: 3.2.24
 etcd_ansible_group: etcd_nodes
 etcd_ssl_enabled: yes
 etcd_pod_install: no
@@ -10,7 +10,7 @@ etcd_peer_listen_ip: "{{ ip }}"
 etcd_hostname: "{{ ansible_hostname }}"
 
 # Local installation configuration
-etcd_archive_checksum: sha256:b729db0732448064271ea6fdcb901773c4fe917763ca07776f22d0e5e0bd4097
+etcd_archive_checksum: sha256:947849dbcfa13927c81236fb76a7c01d587bbab42ab1e807184cd91b026ebed7
 etcd_base_name: etcd-v{{ etcd_version }}-linux-amd64
 etcd_archive: "{{ etcd_base_name }}.tar.gz"
 
