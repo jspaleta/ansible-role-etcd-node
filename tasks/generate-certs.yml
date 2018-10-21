@@ -5,7 +5,7 @@
   command: openssl genrsa -out {{ etcd_private_key }} 2048
   when: not key_result.stat.exists and not key_result.stat.exists
 - name: Set private key owner and permissions
-  file: path={{ etcd_private_key }} owner=etcd mode=0600
+  file: path={{ etcd_private_key }} owner={{ etcd_user }} mode=0600
 
 - name: Read CA cert from ca host
   slurp: src={{ ca_host_cert }}
