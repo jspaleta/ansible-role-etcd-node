@@ -1,4 +1,3 @@
 - jumperfly.ansible_common
 - jumperfly.ca
-- jumperfly.docker
 - jumperfly.kubelet
