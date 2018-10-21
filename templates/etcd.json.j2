@@ -27,7 +27,7 @@
             ],
     "livenessProbe": {
       "httpGet": {
-        "host": "{{ etcd_client_listen_ip }}",
+        "host": "{{ etcd_client_local_ip }}",
         "port": 2379,
         "path": "/health"
       },

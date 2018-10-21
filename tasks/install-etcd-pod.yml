@@ -3,4 +3,4 @@
 - name: Install etcd pod
   template: src=etcd.json.j2 dest=/etc/kubernetes/manifests/etcd.json
 - name: Wait for etcd to start - 30 seconds
-  wait_for: host={{ etcd_client_listen_ip }} port=2379 timeout=30
+  wait_for: host={{ etcd_client_local_ip }} port=2379 timeout=30
