@@ -26,12 +26,10 @@
               "set -a; source /etc/etcd/etcd.conf; set +a; if [ -e /usr/local/bin/migrate-if-needed.sh ]; then /usr/local/bin/migrate-if-needed.sh 1>>/var/log/etcd.log 2>&1; fi; exec /usr/local/bin/etcd --name $ETCD_NAME --data-dir $ETCD_DATA_DIR --listen-client-urls $ETCD_LISTEN_CLIENT_URLS 1>>/var/log/etcd.log 2>&1"
             ],
     "livenessProbe": {
-      "httpGet": {
-        "host": "{{ etcd_client_listen_ip }}",
-        "port": 2379,
-        "path": "/health"
+      "exec": {
+        "command": [ "etcdctl", "{{ etcd_liveness_args|flatten|join('", "') }}", "cluster-health" ]
       },
-      "initialDelaySeconds": 5,
+      "initialDelaySeconds": 15,
       "timeoutSeconds": 15
     },
     "ports": [

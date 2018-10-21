@@ -39,3 +39,10 @@ etcd_protocol: "{{ 'https' if etcd_ssl_enabled else 'http' }}"
 etcd_single_node: "{{ groups[etcd_ansible_group]|length <= 1 }}"
 etcd_image_name: "{{ kube_docker_registry }}/etcd"
 etcd_image_version: "{{ etcd_version }}-{{ etcd_docker_revision }}"
+etcd_liveness_args_ssl:
+  - --ca-file={{ etcd_ca_cert }}
+  - --cert-file={{ etcd_cert }}
+  - --key-file={{ etcd_private_key }}
+etcd_liveness_args:
+  - --endpoint={{ etcd_protocol }}://{{ etcd_hostname }}:2379
+  - "{{ etcd_liveness_args_ssl if etcd_ssl_enabled else [] }}"
