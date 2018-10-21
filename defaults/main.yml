@@ -5,8 +5,8 @@ etcd_ssl_enabled: yes
 etcd_pod_install: no
 
 # Service configuration
-etcd_client_listen_ip: 0.0.0.0
-etcd_peer_listen_ip: 0.0.0.0
+etcd_client_listen_ip: "{{ ip }}"
+etcd_peer_listen_ip: "{{ ip }}"
 etcd_hostname: "{{ ansible_hostname }}"
 
 # Local installation configuration
@@ -35,7 +35,6 @@ etcd_cert_organizational_unit_name: etcd
 
 # Derived configuration
 etcd_user: "{{ 'root' if etcd_pod_install else 'etcd' }}"
-etcd_client_local_ip: "{{ '127.0.0.1' if etcd_client_listen_ip == '0.0.0.0' else etcd_client_listen_ip }}"
 etcd_protocol: "{{ 'https' if etcd_ssl_enabled else 'http' }}"
 etcd_single_node: "{{ groups[etcd_ansible_group]|length <= 1 }}"
 etcd_image_name: "{{ kube_docker_registry }}/etcd"
