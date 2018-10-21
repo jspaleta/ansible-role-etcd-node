@@ -14,6 +14,11 @@ etcd_archive_checksum: sha256:947849dbcfa13927c81236fb76a7c01d587bbab42ab1e80718
 etcd_base_name: etcd-v{{ etcd_version }}-linux-amd64
 etcd_archive: "{{ etcd_base_name }}.tar.gz"
 
+# Kubernetes pod configuration
+kube_docker_registry: k8s.gcr.io
+etcd_docker_revision: 1
+etcd_cpulimit: 500m
+
 # SSL configuration
 ca_host: ca
 ca_dir: /etc/pki/CA/intermediate
@@ -31,3 +36,5 @@ etcd_cert_organizational_unit_name: etcd
 # Derived configuration
 etcd_protocol: "{{ 'https' if etcd_ssl_enabled else 'http' }}"
 etcd_single_node: "{{ groups[etcd_ansible_group]|length <= 1 }}"
+etcd_image_name: "{{ kube_docker_registry }}/etcd"
+etcd_image_version: "{{ etcd_version }}-{{ etcd_docker_revision }}"

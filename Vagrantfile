@@ -6,7 +6,7 @@ unless Vagrant.has_plugin?("vagrant-hostmanager")
 end
 
 $node_count = 3
-$node_memory = 256
+$node_memory = 512
 $ip_prefix = "192.168.99"
 
 host_vars = {}
@@ -29,6 +29,10 @@ Vagrant.configure("2") do |config|
 
   (1..$node_count).each do |i|
     config.vm.define vm_name = "etcd#{i}" do |config|
+      config.vm.provision "shell", run: "always", inline: <<-SHELL
+        swapoff -a
+        sed -i'' '/^127.0.0.1\\t#{vm_name}\\t#{vm_name}$/d' /etc/hosts
+      SHELL
       etcd_nodes << vm_name
       config.vm.provider "virtualbox" do |v|
         v.memory = $node_memory

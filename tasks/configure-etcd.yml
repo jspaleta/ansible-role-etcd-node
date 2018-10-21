@@ -1,0 +1,9 @@
+- name: Create conf directory
+  file: path=/etc/etcd state=directory
+- name: Create lib directory
+  file: path=/var/lib/etcd state=directory mode=0700
+- name: Create configuration file
+  template:
+    src: etcd.conf.j2
+    dest: /etc/etcd/etcd.conf
+  tags: etcd-config

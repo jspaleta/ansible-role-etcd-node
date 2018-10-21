@@ -2,6 +2,8 @@
   group: name=etcd system=true state=present
 - name: Ensure etcd user exists
   user: name=etcd group=etcd home=/var/lib/etcd system=yes
+- name: Set ownership of /var/lib/etcd
+  file: path=/var/lib/etcd owner=etcd group=etcd
 - name: Download etcd
   get_url:
     url: https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/{{ etcd_archive }}
@@ -22,10 +24,3 @@
   with_items:
     - etcd
     - etcdctl
-- name: Create conf directory
-  file: path=/etc/etcd state=directory
-- name: Create configuration file
-  template:
-    src: etcd.conf.j2
-    dest: /etc/etcd/etcd.conf
-  tags: etcd-config
