@@ -2,11 +2,11 @@
   tags: always
 - include: configure-etcd.yml
   tags: configure-etcd
-- include: "{{ 'install-etcd-pod.yml' if etcd_pod_install else 'install-etcd-local.yml' }}"
-  tags: install-etcd
 - include: generate-certs.yml
   when: etcd_ssl_enabled
   tags: generate-certs
+- include: "{{ 'install-etcd-pod.yml' if etcd_pod_install else 'install-etcd-local.yml' }}"
+  tags: install-etcd
 - include: configure-services.yml
   when: not etcd_pod_install
   tags: configure-services
