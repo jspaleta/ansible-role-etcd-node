@@ -7,3 +7,5 @@
   tags: generate-certs
 - include: "{{ 'install-etcd-pod.yml' if etcd_pod_install else 'install-etcd-local.yml' }}"
   tags: install-etcd
+- name: Wait for etcd to start - 30 seconds
+  wait_for: host={{ etcd_client_local_ip }} port=2379 timeout=30
