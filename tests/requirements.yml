@@ -1,3 +1,4 @@
 - jumperfly.ansible_common
-- jumperfly.ca
+- jumperfly.root_ca
+- jumperfly.ssl_cert
 - jumperfly.kubelet

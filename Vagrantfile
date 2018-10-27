@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "ca" do |config|
     config.vm.provider "virtualbox" do |v|
       v.memory = $node_memory
-      v.cpus = 1
+      v.cpus = 2
     end
     config.vm.network "private_network", ip: "#{$ip_prefix}.100"
   end
@@ -58,7 +58,9 @@ Vagrant.configure("2") do |config|
           ansible.playbook = "tests/test.yml"
           ansible.host_vars = host_vars
           ansible.groups = {
-            "etcd_nodes": etcd_nodes
+            "etcd_nodes": etcd_nodes,
+            "root_ca_nodes": [ "ca" ],
+            "intermediate_ca_nodes": [ "ca" ]
           }
         end
       end

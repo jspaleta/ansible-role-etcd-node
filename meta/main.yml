@@ -1,5 +1,6 @@
 dependencies:
   - role: jumperfly.ansible_common
+  - role: jumperfly.cfssl
   - role: jumperfly.kubelet
     when: etcd_pod_install
 

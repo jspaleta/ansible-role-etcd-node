@@ -21,12 +21,11 @@ etcd_cpulimit: 500m
 
 # SSL configuration
 ca_host: ca
-ca_dir: /etc/pki/CA/intermediate
-ca_host_cert: "{{ ca_dir }}/certs/intermediate-chain.crt"
+ca_host_cert: /etc/pki/ansible-ca/etcd-ca-chain.pem
 
 etcd_private_key: /etc/etcd/{{ etcd_hostname }}-key.pem
-etcd_cert: /etc/etcd/{{ etcd_hostname }}.crt
-etcd_ca_cert: /etc/etcd/ca.crt
+etcd_cert: /etc/etcd/{{ etcd_hostname }}.pem
+etcd_ca_cert: /etc/etcd/etcd-ca-chain.pem
 etcd_cert_country: GB
 etcd_cert_city: London
 etcd_cert_state: Greater London

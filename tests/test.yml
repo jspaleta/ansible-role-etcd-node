@@ -1,9 +1,23 @@
-- hosts: ca
+- hosts: root_ca_nodes
   become: yes
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   roles:
-  - role: jumperfly.ca
+  - role: jumperfly.root_ca
     when: etcd_ssl_enabled | default(true)
+  - role: jumperfly.ssl_cert
+    when: etcd_ssl_enabled | default(true)
+    ssl_cert_type: intermediate
+    ssl_cert_common_name: etcd-ca
 - hosts: etcd_nodes
   become: yes
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   roles:
-  - etcd_node
+  - role: jumperfly.ssl_cert
+    when: etcd_ssl_enabled | default(true)
+    ssl_cert_type: peer
+    ssl_cert_base_dir: /etc/etcd
+    ssl_cert_common_name: "{{ ansible_hostname }}"
+    ssl_cert_ca_delegate_name: etcd-ca
+  - role: etcd_node

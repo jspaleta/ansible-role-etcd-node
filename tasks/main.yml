@@ -1,10 +1,9 @@
 - set_fact: etcd_hostname={{ etcd_hostname }}
   tags: always
+- include: create-user.yml
+  when: etcd_user != 'root'
 - include: configure-etcd.yml
   tags: configure-etcd
-- include: generate-certs.yml
-  when: etcd_ssl_enabled
-  tags: generate-certs
 - include: "{{ 'install-etcd-pod.yml' if etcd_pod_install else 'install-etcd-local.yml' }}"
   tags: install-etcd
 - name: Wait for etcd to start - 30 seconds
