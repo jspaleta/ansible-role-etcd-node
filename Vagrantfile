@@ -59,8 +59,7 @@ Vagrant.configure("2") do |config|
           ansible.host_vars = host_vars
           ansible.groups = {
             "etcd_nodes": etcd_nodes,
-            "root_ca_nodes": [ "ca" ],
-            "intermediate_ca_nodes": [ "ca" ]
+            "ca_nodes": [ "ca" ]
           }
         end
       end

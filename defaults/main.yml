@@ -26,11 +26,13 @@ ca_host_cert: /etc/pki/ansible-ca/etcd-ca-chain.pem
 etcd_private_key: /etc/etcd/{{ etcd_hostname }}-key.pem
 etcd_cert: /etc/etcd/{{ etcd_hostname }}.pem
 etcd_ca_cert: /etc/etcd/etcd-ca-chain.pem
-etcd_cert_country: GB
-etcd_cert_city: London
-etcd_cert_state: Greater London
-etcd_cert_organization_name: Ansible Certificate Authority
-etcd_cert_organizational_unit_name: etcd
+etcd_cert_subject:
+  common_name: "{{ etcd_hostname }}"
+  country: GB
+  city: London
+  state: Greater London
+  organization_name: Ansible Certificate Authority
+  organizational_unit_name: etcd
 
 # Derived configuration
 etcd_user: "{{ 'root' if etcd_pod_install else 'etcd' }}"

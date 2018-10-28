@@ -1,4 +1,4 @@
-- hosts: root_ca_nodes
+- hosts: ca_nodes
   become: yes
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
@@ -8,7 +8,7 @@
   - role: jumperfly.ssl_cert
     when: etcd_ssl_enabled | default(true)
     ssl_cert_type: intermediate
-    ssl_cert_common_name: etcd-ca
+    ssl_cert_name: etcd-ca
 - hosts: etcd_nodes
   become: yes
   environment:
