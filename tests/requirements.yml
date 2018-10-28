@@ -1,4 +1,8 @@
-- jumperfly.ansible_common
-- jumperfly.root_ca
-- jumperfly.ssl_cert
-- jumperfly.kubelet
+- src: jumperfly.ansible_common
+  version: v0.1.0
+- src: jumperfly.root_ca
+  version: v0.1.0
+- src: jumperfly.ssl_cert
+  version: v0.1.0
+- src: jumperfly.kubelet
+  version: v0.1.0

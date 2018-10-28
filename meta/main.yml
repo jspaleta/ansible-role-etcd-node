@@ -1,13 +1,18 @@
 dependencies:
-  - role: jumperfly.ansible_common
-  - role: jumperfly.cfssl
-  - role: jumperfly.ssl_cert
+  - src: jumperfly.ansible_common
+    version: v0.1.0
+  - src: jumperfly.cfssl
+    version: v0.1.0
+  - src: jumperfly.ssl_cert
+    version: v0.1.0
     when: etcd_ssl_enabled
     ssl_cert_type: peer
     ssl_cert_base_dir: /etc/etcd
     ssl_cert_name: "{{ etcd_hostname }}"
     ssl_cert_ca_delegate_name: etcd-ca
-  - role: jumperfly.kubelet
+    ssl_cert_subject: "{{ etcd_cert_subject }}"
+  - src: jumperfly.kubelet
+    version: v0.1.0
     when: etcd_pod_install
 
 galaxy_info:
