@@ -2,7 +2,7 @@ dependencies:
   - src: jumperfly.cfssl
     version: v0.1.0
   - src: jumperfly.ssl_cert
-    version: v0.2.0
+    version: v0.2.1
     when: etcd_ssl_enabled
     ssl_cert_type: peer
     ssl_cert_file_base_dir: /etc/etcd
