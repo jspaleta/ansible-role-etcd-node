@@ -1,10 +1,42 @@
-- set_fact: etcd_hostname={{ etcd_hostname }}
-  tags: always
-- include: create-user.yml
+- name: Set etcd_hostname fact
+  set_fact:
+    etcd_hostname: "{{ etcd_hostname }}"
+- name: Create user
   when: etcd_user != 'root'
-- include: configure-etcd.yml
-  tags: configure-etcd
+  block:
+  - name: Ensure etcd group exists
+    group:
+      name: "{{ etcd_user }}"
+      system: yes
+      state: present
+  - name: Ensure etcd user exists
+    user:
+      name: "{{ etcd_user }}"
+      group: "{{ etcd_user }}"
+      home: /var/lib/etcd
+      system: yes
+- name: Create conf directory
+  file:
+    path: /etc/etcd
+    state: directory
+- name: Set ownership of etcd key
+  file:
+    path: "{{ etcd_private_key }}"
+    owner: "{{ etcd_user }}"
+  when: etcd_ssl_enabled
+- name: Create lib directory
+  file:
+    path: /var/lib/etcd
+    state: directory
+    owner: "{{ etcd_user }}"
+    group: "{{ etcd_user }}"
+    mode: 0700
+- name: Create configuration file
+  template:
+    src: etcd.conf.j2
+    dest: /etc/etcd/etcd.conf
+
 - include: "{{ 'install-etcd-pod.yml' if etcd_pod_install else 'install-etcd-local.yml' }}"
-  tags: install-etcd
+
 - name: Wait for etcd to start - 30 seconds
   wait_for: host={{ etcd_client_listen_ip }} port=2379 timeout=30
