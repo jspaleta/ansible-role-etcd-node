@@ -1,6 +1,6 @@
-- name: Set etcd_hostname fact
+- name: Set etcd_peer_listen_ip fact
   set_fact:
-    etcd_hostname: "{{ etcd_hostname }}"
+    etcd_peer_listen_ip: "{{ etcd_peer_listen_ip }}"
 - name: Create user
   when: etcd_user != 'root'
   block:
@@ -36,7 +36,7 @@
     src: etcd.conf.j2
     dest: /etc/etcd/etcd.conf
 
-- include: "{{ 'install-etcd-pod.yml' if etcd_pod_install else 'install-etcd-local.yml' }}"
+- include: install-etcd-{{ etcd_install_mode }}.yml
 
 - name: Wait for etcd to start - 30 seconds
   wait_for: host={{ etcd_client_listen_ip }} port=2379 timeout=30

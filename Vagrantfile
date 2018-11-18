@@ -42,7 +42,8 @@ Vagrant.configure("2") do |config|
       ip = "#{$ip_prefix}.10#{i}"
       config.vm.network "private_network", ip: ip
       host_vars[vm_name] = {
-        "ip": ip
+        "etcd_iface": "eth1",
+        "etcd_install_mode": "service"
       }
       if i == $node_count
         config.vm.box = "jumperfly/centos-7-ansible"

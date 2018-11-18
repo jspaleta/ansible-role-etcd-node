@@ -2,42 +2,22 @@
 etcd_version: 3.2.24
 etcd_ansible_group: etcd_nodes
 etcd_ssl_enabled: yes
-etcd_pod_install: no
+etcd_install_mode: service
 
-# Service configuration
-etcd_client_listen_ip: "{{ ip }}"
-etcd_peer_listen_ip: "{{ ip }}"
-etcd_hostname: "{{ ansible_hostname }}"
+# Network configuration
+etcd_iface: "{{ default_ipv4.alias }}"
+etcd_peer_iface: "{{ etcd_iface }}"
 
 # Local installation configuration
-etcd_archive_checksum: sha256:947849dbcfa13927c81236fb76a7c01d587bbab42ab1e807184cd91b026ebed7
 etcd_base_name: etcd-v{{ etcd_version }}-linux-amd64
-etcd_archive: "{{ etcd_base_name }}.tar.gz"
+etcd_archive_checksum: sha256:947849dbcfa13927c81236fb76a7c01d587bbab42ab1e807184cd91b026ebed7
 
-# Kubernetes pod configuration
+# Kubernetes pod installation configuration
 kube_docker_registry: k8s.gcr.io
 etcd_docker_revision: 1
 etcd_cpulimit: 500m
 
 # SSL configuration
-ca_host: ca
-ca_host_cert: /etc/pki/ansible-ca/etcd-ca-chain.pem
-
-etcd_private_key: /etc/etcd/{{ etcd_hostname }}-key.pem
-etcd_cert: /etc/etcd/{{ etcd_hostname }}.pem
-etcd_ca_cert: /etc/etcd/{{ etcd_hostname }}-chain.pem
-etcd_cert_subject_common_name: "{{ etcd_hostname }}"
-
-# Derived configuration
-etcd_user: "{{ 'root' if etcd_pod_install else 'etcd' }}"
-etcd_protocol: "{{ 'https' if etcd_ssl_enabled else 'http' }}"
-etcd_single_node: "{{ groups[etcd_ansible_group]|length <= 1 }}"
-etcd_image_name: "{{ kube_docker_registry }}/etcd"
-etcd_image_version: "{{ etcd_version }}-{{ etcd_docker_revision }}"
-etcd_liveness_args_ssl:
-  - --ca-file={{ etcd_ca_cert }}
-  - --cert-file={{ etcd_cert }}
-  - --key-file={{ etcd_private_key }}
-etcd_liveness_args:
-  - --endpoint={{ etcd_protocol }}://{{ etcd_hostname }}:2379
-  - "{{ etcd_liveness_args_ssl if etcd_ssl_enabled else [] }}"
+etcd_private_key: /etc/etcd/{{ ansible_hostname }}-key.pem
+etcd_cert: /etc/etcd/{{ ansible_hostname }}.pem
+etcd_ca_cert: /etc/etcd/{{ ansible_hostname }}-chain.pem
