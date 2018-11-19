@@ -7,16 +7,17 @@ See the [SSL Configuration](#ssl-configuration) section for more information.
 
 ## Installation Modes
 Etcd can be installed in the following modes:
+* Package - etcd is installed with the package manager
 * Local service - etcd binaries are downloaded and configured as a service.
 * Kubernetes pod - etcd is deployed as static pod, requires kubelet.
 
 ## Base Configuration
-| Key | Description |	
+| Key | Description |
 |-----|-------------|
 | ``etcd_version``       | The version of etcd to install. |
 | ``etcd_ansible_group`` | The Ansible group that defines all etcd nodes in the cluster, default ``etc_nodes``. Clustering is enabled if more than one host is found in the group. |
 | ``etcd_ssl_enabled``   | Determines whether SSL is used (default ``yes``). See the [SSL Configuration](#ssl-configuration) section for more detail. |
-| ``etcd_install_mode``  | Determines the installation method. Supported modes are ``service`` (default), or ``pod``. |
+| ``etcd_install_mode``  | Determines the installation method. Supported modes are ``package`` (default), ``service`` or ``pod``. |
 
 ## Network Configuration
 | Key | Description |
@@ -58,4 +59,3 @@ The ``jumperfly.ssl_cert`` role can be used to generate them if required. For ex
 | ``etcd_private_key`` | The location of the etcd private key. Defaults to ``/etc/etcd/{{ ansible_hostname }}-key.pem``. |
 | ``etcd_cert``        | The location of the etcd certificate. Defaults to ``/etc/etcd/{{ ansible_hostname }}.pem``. |
 | ``etcd_ca_cert``     | The location of the etcd CA certificate chain. Defaults to ``/etc/etcd/{{ ansible_hostname }}-chain.pem`` |
-

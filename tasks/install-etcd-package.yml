@@ -1,0 +1,15 @@
+- name: Configure etcd YUM repository
+  yum_repository:
+    name: etcd
+    description: etcd
+    baseurl: "{{ etcd_yum_repo_url }}"
+    gpgcheck: no
+- name: Ensure etcd is installed and up to date
+  package:
+    name: etcd-{{ etcd_version }}
+    state: latest
+- name: Ensure etcd service is running and enabled
+  service:
+    name: etcd
+    state: started
+    enabled: yes

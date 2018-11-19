@@ -8,6 +8,9 @@ etcd_install_mode: service
 etcd_iface: "{{ default_ipv4.alias }}"
 etcd_peer_iface: "{{ etcd_iface }}"
 
+# Package installation configuration
+etcd_yum_repo_url: https://dl.bintray.com/jumperfly/yum/etcd/stable
+
 # Local installation configuration
 etcd_base_name: etcd-v{{ etcd_version }}-linux-amd64
 etcd_archive_checksum: sha256:947849dbcfa13927c81236fb76a7c01d587bbab42ab1e807184cd91b026ebed7
