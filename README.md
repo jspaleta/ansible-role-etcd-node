@@ -9,7 +9,7 @@ See the [SSL Configuration](#ssl-configuration) section for more information.
 Etcd can be installed in the following modes:
 * Package - etcd is installed with the package manager
 * Local service - etcd binaries are downloaded and configured as a service.
-* Kubernetes pod - etcd is deployed as static pod, requires kubelet.
+* Kubernetes pod - etcd is deployed as static pod, requires kubelet to be installed, eg. through the  ``jumperfly.kubelet`` role.
 
 ## Base Configuration
 | Key | Description |
