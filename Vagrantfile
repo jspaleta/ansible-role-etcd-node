@@ -19,14 +19,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision :hostmanager
   config.ssh.insert_key = false
 
-  config.vm.define "ca" do |config|
-    config.vm.provider "virtualbox" do |v|
-      v.memory = $node_memory
-      v.cpus = 2
-    end
-    config.vm.network "private_network", ip: "#{$ip_prefix}.100"
-  end
-
   (1..$node_count).each do |i|
     config.vm.define vm_name = "etcd#{i}" do |config|
       config.vm.provision "shell", run: "always", inline: <<-SHELL
@@ -43,7 +35,7 @@ Vagrant.configure("2") do |config|
       config.vm.network "private_network", ip: ip
       host_vars[vm_name] = {
         "etcd_iface": "eth1",
-        "etcd_install_mode": "service"
+        "etcd_install_mode": "package"
       }
       if i == $node_count
         config.vm.box = "jumperfly/centos-7-ansible"
@@ -60,7 +52,7 @@ Vagrant.configure("2") do |config|
           ansible.host_vars = host_vars
           ansible.groups = {
             "etcd_nodes": etcd_nodes,
-            "ca_nodes": [ "ca" ]
+            "ca_nodes": [ "etcd1" ]
           }
         end
       end
