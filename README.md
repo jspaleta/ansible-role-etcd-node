@@ -46,7 +46,7 @@ The ``jumperfly.ssl_cert`` role can be used to generate them if required. For ex
   - role: jumperfly.ssl_cert
     ssl_cert_type: peer
     ssl_cert_file_base_dir: /etc/etcd
-    ssl_cert_name: "etcd-{{ ansible_hostname }}"
+    ssl_cert_name: "{{ ansible_hostname }}"
     ssl_cert_ca_delegate_name: etcd-ca
     ssl_cert_subject_common_name: "{{ ansible_hostname }}"
     ssl_cert_hosts:
