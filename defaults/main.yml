@@ -5,7 +5,7 @@ etcd_ssl_enabled: yes
 etcd_install_mode: service
 
 # Network configuration
-etcd_iface: "{{ default_ipv4.alias }}"
+etcd_iface: "{{ ansible_default_ipv4.alias }}"
 etcd_peer_iface: "{{ etcd_iface }}"
 
 # Package installation configuration
