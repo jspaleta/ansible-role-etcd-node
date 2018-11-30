@@ -36,7 +36,7 @@
     src: etcd.conf.j2
     dest: /etc/etcd/etcd.conf
 
-- include: install-etcd-{{ etcd_install_mode }}.yml
+- include_tasks: install-etcd-{{ etcd_install_mode }}.yml
 
 - name: Wait for etcd to start - 30 seconds
   wait_for: host={{ etcd_client_listen_ip }} port=2379 timeout=30
