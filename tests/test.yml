@@ -1,30 +1,15 @@
-- hosts: all
-  become: yes
-  roles:
-  - jumperfly.ansible_common
-  - jumperfly.cfssl
-- hosts: ca_nodes
-  become: yes
-  roles:
-  - role: jumperfly.root_ca
-    when: etcd_ssl_enabled | default(true)
-  - role: jumperfly.ssl_cert
-    when: etcd_ssl_enabled | default(true)
-    ssl_cert_type: intermediate
-    ssl_cert_name: etcd-ca
 - hosts: etcd_nodes
   become: yes
+  pre_tasks:
+  - name: Ensure cert dir exists
+    file:
+      path: /etc/etcd
+      state: directory
+  - name: Copy certs
+    copy:
+      src: node-certs/{{ inventory_hostname }}/
+      dest: /etc/etcd/
   roles:
-  - role: jumperfly.ssl_cert
-    when: etcd_ssl_enabled | default(true)
-    ssl_cert_type: peer
-    ssl_cert_file_base_dir: /etc/etcd
-    ssl_cert_name: "{{ ansible_hostname }}"
-    ssl_cert_ca_delegate_name: etcd-ca
-    ssl_cert_subject_common_name: "{{ ansible_hostname }}"
-    ssl_cert_hosts:
-      - "{{ ansible_hostname }}"
-      - "{{ ansible_eth1.ipv4.address }}"
   - role: jumperfly.kubelet
     when: etcd_install_mode == 'pod'
   - role: etcd_node
