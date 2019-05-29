@@ -23,7 +23,7 @@
   file:
     path: "{{ etcd_private_key }}"
     owner: "{{ etcd_user }}"
-  when: etcd_ssl_enabled
+  when: etcd_ssl_enabled | bool
 - name: Create lib directory
   file:
     path: /var/lib/etcd
