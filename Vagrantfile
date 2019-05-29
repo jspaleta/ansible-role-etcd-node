@@ -1,10 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-unless Vagrant.has_plugin?("vagrant-hostmanager")
-  raise 'vagrant-hostmanager plugin is not installed!'
-end
-
 $node_count = 3
 $node_memory = 512
 $ip_prefix = "192.168.99"
@@ -16,15 +12,12 @@ Vagrant.configure("2") do |config|
   config.vm.box = "jumperfly/centos-7"
   config.vm.box_version = "7.6.1"
   config.vm.box_check_update = false
-  config.hostmanager.include_offline = true
-  config.vm.provision :hostmanager
   config.ssh.insert_key = false
 
   (1..$node_count).each do |i|
     config.vm.define vm_name = "etcd#{i}" do |config|
       config.vm.provision "shell", run: "always", inline: <<-SHELL
         swapoff -a
-        sed -i'' '/^127.0.0.1\\t#{vm_name}\\t#{vm_name}$/d' /etc/hosts
         systemctl stop firewalld
         systemctl disable firewalld
       SHELL
@@ -38,6 +31,7 @@ Vagrant.configure("2") do |config|
       config.vm.network "private_network", ip: ip
       host_vars[vm_name] = {
         "ansible_ssh_common_args": "-o StrictHostKeyChecking=no",
+        "ansible_host": ip,
         "etcd_iface": "eth1",
         "etcd_install_mode": "package"
       }
