@@ -17,7 +17,6 @@ Vagrant.configure("2") do |config|
   (1..$node_count).each do |i|
     config.vm.define vm_name = "etcd#{i}" do |config|
       config.vm.provision "shell", run: "always", inline: <<-SHELL
-        swapoff -a
         systemctl stop firewalld
         systemctl disable firewalld
       SHELL
