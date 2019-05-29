@@ -14,6 +14,7 @@ etcd_nodes = []
 
 Vagrant.configure("2") do |config|
   config.vm.box = "jumperfly/centos-7"
+  config.vm.box_version = "7.6.1"
   config.vm.box_check_update = false
   config.hostmanager.include_offline = true
   config.vm.provision :hostmanager
@@ -24,6 +25,8 @@ Vagrant.configure("2") do |config|
       config.vm.provision "shell", run: "always", inline: <<-SHELL
         swapoff -a
         sed -i'' '/^127.0.0.1\\t#{vm_name}\\t#{vm_name}$/d' /etc/hosts
+        systemctl stop firewalld
+        systemctl disable firewalld
       SHELL
       etcd_nodes << vm_name
       config.vm.provider "virtualbox" do |v|
@@ -34,11 +37,13 @@ Vagrant.configure("2") do |config|
       ip = "#{$ip_prefix}.10#{i}"
       config.vm.network "private_network", ip: ip
       host_vars[vm_name] = {
+        "ansible_ssh_common_args": "-o StrictHostKeyChecking=no",
         "etcd_iface": "eth1",
         "etcd_install_mode": "package"
       }
       if i == $node_count
-        config.vm.box = "jumperfly/centos-7-ansible"
+        config.vm.box = "jumperfly/ansible-2.8"
+        config.vm.box_version = "0.3"
         config.vm.provision "shell", privileged: false, inline: "cp /vagrant/vagrant_insecure_key /home/vagrant/.ssh/id_rsa && chmod 600 /home/vagrant/.ssh/id_rsa"
         config.vm.provision "shell", inline: <<-SHELL
           mkdir -p /etc/ansible/roles
