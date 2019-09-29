@@ -10,7 +10,7 @@ etcd_nodes = []
 
 Vagrant.configure("2") do |config|
   config.vm.box = "jumperfly/centos-7"
-  config.vm.box_version = "7.6.1"
+  config.vm.box_version = "7.7.2"
   config.vm.box_check_update = false
   config.ssh.insert_key = false
 
@@ -36,8 +36,7 @@ Vagrant.configure("2") do |config|
       }
       if i == $node_count
         config.vm.box = "jumperfly/ansible-2.8"
-        config.vm.box_version = "0.3"
-        config.vm.provision "shell", privileged: false, inline: "cp /vagrant/vagrant_insecure_key /home/vagrant/.ssh/id_rsa && chmod 600 /home/vagrant/.ssh/id_rsa"
+        config.vm.box_version = "5.5"
         config.vm.provision "shell", inline: <<-SHELL
           mkdir -p /etc/ansible/roles
           ln -snf /vagrant/ /etc/ansible/roles/etcd_node
