@@ -7,7 +7,7 @@
 - name: Ensure etcd is installed and up to date
   package:
     name: etcd-{{ etcd_version }}
-    state: latest
+    state: present
 - name: Ensure etcd service is running and enabled
   service:
     name: etcd
