@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
 
   (1..$node_count).each do |i|
     config.vm.define vm_name = "etcd#{i}" do |config|
-      config.vm.provision "shell", run: "always", inline: <<-SHELL
+      config.vm.provision "shell", inline: <<-SHELL
         systemctl stop firewalld
         systemctl disable firewalld
       SHELL
@@ -34,25 +34,28 @@ Vagrant.configure("2") do |config|
         "etcd_iface": "eth1",
         "etcd_install_mode": "package"
       }
-      if i == $node_count
-        config.vm.box = "jumperfly/ansible-2.8"
-        config.vm.box_version = "5.5"
-        config.vm.provision "shell", inline: <<-SHELL
-          mkdir -p /etc/ansible/roles
-          ln -snf /vagrant/ /etc/ansible/roles/etcd_node
-          ansible-galaxy install --ignore-errors -r /vagrant/tests/requirements.yml -p /etc/ansible/roles
-        SHELL
-        config.vm.provision "ansible_local" do |ansible|
-          ansible.compatibility_mode = "2.0"
-          ansible.limit = "all"
-          ansible.playbook = "tests/test.yml"
-          ansible.host_vars = host_vars
-          ansible.groups = {
-            "etcd_nodes": etcd_nodes,
-            "ca_nodes": [ "etcd1" ]
-          }
-        end
-      end
+    end
+  end
+
+  config.vm.define "ansible" do |config|
+    config.vm.box = "jumperfly/ansible-2.8"
+    config.vm.box_version = "5.5"
+    config.vm.hostname = "ansible"
+    config.vm.network "private_network", ip: "#{$ip_prefix}.100"
+    config.vm.provision "shell", inline: <<-SHELL
+      mkdir -p /etc/ansible/roles
+      ln -snf /vagrant/ /etc/ansible/roles/etcd_node
+      ansible-galaxy install --ignore-errors -r /vagrant/tests/requirements.yml -p /etc/ansible/roles
+    SHELL
+    config.vm.provision "ansible_local" do |ansible|
+      ansible.compatibility_mode = "2.0"
+      ansible.limit = "all"
+      ansible.playbook = "tests/test.yml"
+      ansible.host_vars = host_vars
+      ansible.groups = {
+        "etcd_nodes": etcd_nodes,
+        "ca_nodes": [ "etcd1" ]
+      }
     end
   end
 
