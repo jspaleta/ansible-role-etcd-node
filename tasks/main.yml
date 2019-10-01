@@ -40,3 +40,10 @@
 
 - name: Wait for etcd to start - 30 seconds
   wait_for: host={{ etcd_client_listen_ip }} port=2379 timeout=30
+
+- name: Check health
+  uri:
+    url: https://{{ etcd_client_listen_ip }}:2379/health
+    client_cert: "{{ etcd_cert }}"
+    client_key: "{{ etcd_private_key }}"
+    validate_certs: no
