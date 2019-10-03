@@ -9,7 +9,8 @@
     copy:
       src: node-certs/{{ inventory_hostname }}/
       dest: /etc/etcd/
-  roles:
-  - role: jumperfly.kubelet
+  - include_role:
+      name: jumperfly.kubelet
     when: etcd_install_mode == 'pod'
+  roles:
   - role: etcd_node
