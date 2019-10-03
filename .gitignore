@@ -7,3 +7,4 @@
 **/.terraform
 **/*.retry
 tests/group_vars/all.yml
+**/roles

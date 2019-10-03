@@ -39,9 +39,11 @@
 - include_tasks: install-etcd-{{ etcd_install_mode }}.yml
 
 - name: Wait for etcd to start - 30 seconds
+  when: etcd_enable_service
   wait_for: host={{ etcd_client_listen_ip }} port=2379 timeout=30
 
 - name: Check health
+  when: etcd_enable_service
   uri:
     url: https://{{ etcd_client_listen_ip }}:2379/health
     client_cert: "{{ etcd_cert }}"
