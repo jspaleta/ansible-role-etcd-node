@@ -8,8 +8,5 @@
   package:
     name: etcd-{{ etcd_version }}
     state: present
-- name: Ensure etcd service is running and enabled
-  service:
-    name: etcd
-    state: started
-    enabled: yes
+- include_tasks: configure-etcd-service.yml
+  when: etcd_enable_service

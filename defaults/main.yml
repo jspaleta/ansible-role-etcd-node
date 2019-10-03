@@ -3,6 +3,7 @@ etcd_version: 3.3.15
 etcd_ansible_group: etcd_nodes
 etcd_ssl_enabled: yes
 etcd_install_mode: service
+etcd_enable_service: yes
 
 # Network configuration
 etcd_iface: "{{ ansible_default_ipv4.alias }}"

@@ -14,10 +14,11 @@ Etcd can be installed in the following modes:
 ## Base Configuration
 | Key | Description |
 |-----|-------------|
-| ``etcd_version``       | The version of etcd to install. |
-| ``etcd_ansible_group`` | The Ansible group that defines all etcd nodes in the cluster, default ``etc_nodes``. Clustering is enabled if more than one host is found in the group. |
-| ``etcd_ssl_enabled``   | Determines whether SSL is used (default ``yes``). See the [SSL Configuration](#ssl-configuration) section for more detail. |
-| ``etcd_install_mode``  | Determines the installation method. Supported modes are ``package`` (default), ``service`` or ``pod``. |
+| ``etcd_version``        | The version of etcd to install. |
+| ``etcd_ansible_group``  | The Ansible group that defines all etcd nodes in the cluster, default ``etc_nodes``. Clustering is enabled if more than one host is found in the group. |
+| ``etcd_ssl_enabled``    | Determines whether SSL is used (default ``yes``). See the [SSL Configuration](#ssl-configuration) section for more detail. |
+| ``etcd_install_mode``   | Determines the installation method. Supported modes are ``package`` (default), ``service`` or ``pod``. |
+| ``etcd_enable_service`` | Determines whether to start/enable the etcd service. Defaults to ``yes`` and cannot be modified for ``pod`` installation mode. |
 
 ## Network Configuration
 | Key | Description |
