@@ -5,9 +5,6 @@ $node_count = 3
 $node_memory = 512
 $ip_prefix = "192.168.99"
 
-host_vars = {}
-etcd_nodes = []
-
 Vagrant.configure("2") do |config|
   config.vm.box = "jumperfly/centos-7"
   config.vm.box_version = "7.7.2"
@@ -20,7 +17,6 @@ Vagrant.configure("2") do |config|
         systemctl stop firewalld
         systemctl disable firewalld
       SHELL
-      etcd_nodes << vm_name
       config.vm.provider "virtualbox" do |v|
         v.memory = $node_memory
         v.cpus = 1
@@ -28,12 +24,6 @@ Vagrant.configure("2") do |config|
       config.vm.hostname = vm_name
       ip = "#{$ip_prefix}.10#{i}"
       config.vm.network "private_network", ip: ip
-      host_vars[vm_name] = {
-        "ansible_ssh_common_args": "-o StrictHostKeyChecking=no",
-        "ansible_host": ip,
-        "etcd_iface": "eth1",
-        "etcd_install_mode": "package"
-      }
     end
   end
 
@@ -46,16 +36,15 @@ Vagrant.configure("2") do |config|
       mkdir -p /etc/ansible/roles
       ln -snf /vagrant/ /etc/ansible/roles/etcd_node
       ansible-galaxy install --ignore-errors -r /vagrant/tests/requirements.yml -p /etc/ansible/roles
+      if ! rpm -q sshpass > /dev/null; then
+        yum -y install sshpass
+      fi
     SHELL
     config.vm.provision "ansible_local" do |ansible|
       ansible.compatibility_mode = "2.0"
       ansible.limit = "all"
       ansible.playbook = "tests/test.yml"
-      ansible.host_vars = host_vars
-      ansible.groups = {
-        "etcd_nodes": etcd_nodes,
-        "ca_nodes": [ "etcd1" ]
-      }
+      ansible.inventory_path = "tests/inventory-3node"
     end
   end
 

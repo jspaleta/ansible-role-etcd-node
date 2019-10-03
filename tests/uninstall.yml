@@ -1,0 +1,21 @@
+- hosts: etcd_nodes
+  become: yes
+  tasks:
+    - name: Gather service facts
+      service_facts:
+    - name: Stop service
+      when: "'etcd.service' in ansible_facts.services"
+      systemd:
+        name: etcd
+        state: stopped
+    - name: Uninstall package
+      package:
+        name: etcd
+        state: absent
+    - name: Remove etcd dirs
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/etcd
+        - /var/lib/etcd
