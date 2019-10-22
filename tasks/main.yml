@@ -1,6 +1,14 @@
-- name: Set etcd_peer_listen_ip fact
-  set_fact:
-    etcd_peer_listen_ip: "{{ etcd_peer_listen_ip }}"
+- name: Include fact tasks
+  include_tasks: gather-facts.yml
+
+- name: Include tasks for existing cluster members
+  include_tasks: existing-member-tasks.yml
+  when: etcd_already_in_cluster
+
+- name: Include tasks for new cluster members
+  include_tasks: new-member-tasks.yml
+  when: etcd_cluster_exists and not etcd_already_in_cluster
+
 - name: Create user
   when: etcd_user != 'root'
   block:
@@ -35,6 +43,8 @@
   template:
     src: etcd.conf.j2
     dest: /etc/etcd/etcd.conf
+  vars:
+    etcd_initial_cluster_state: "{{ 'existing' if etcd_cluster_exists and not etcd_already_in_cluster else 'new' }}"
 
 - include_tasks: install-etcd-{{ etcd_install_mode }}.yml
 

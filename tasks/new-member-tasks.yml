@@ -1,0 +1,18 @@
+- name: Add missing member to cluster
+  delegate_to: "{{ etcd_delegate_host }}"
+  changed_when: true
+  uri:
+    url: https://{{ etcd_delegate_vars.etcd_client_listen_ip }}:2379/v2/members
+    method: POST
+    body: "{{ etcd_member_data | to_json }}"
+    body_format: json
+    status_code: 201
+    client_cert: "{{ etcd_delegate_vars.etcd_cert }}"
+    client_key: "{{ etcd_delegate_vars.etcd_private_key }}"
+    validate_certs: no
+  vars:
+    etcd_delegate_host: "{{ groups['etcd_cluster_True'][0] }}"
+    etcd_delegate_vars: "{{ hostvars[etcd_delegate_host] }}"
+    etcd_member_data:
+      peerURLs:
+        - https://{{ etcd_peer_listen_ip }}:2380

@@ -1,4 +1,4 @@
-- hosts: etcd_nodes
+- hosts: etcd_nodes,single_etcd_node
   become: yes
   pre_tasks:
   - name: Ensure cert dir exists
@@ -12,5 +12,10 @@
   - include_role:
       name: jumperfly.kubelet
     when: etcd_install_mode == 'pod'
+- hosts: etcd_nodes
   roles:
   - role: etcd_node
+- hosts: single_etcd_node
+  roles:
+  - role: etcd_node
+    etcd_ansible_group: single_etcd_node

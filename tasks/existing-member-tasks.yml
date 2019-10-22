@@ -1,0 +1,54 @@
+- name: Check etcd cluster members
+  uri:
+    url: https://{{ etcd_client_listen_ip }}:2379/v2/members
+    client_cert: "{{ etcd_cert }}"
+    client_key: "{{ etcd_private_key }}"
+    validate_certs: no
+  register: etcd_members_result
+- name: Set etcd_cluster_id fact
+  set_fact:
+    etcd_cluster_id: "{{ etcd_members_result.x_etcd_cluster_id }}"
+
+- name: Detected {{ unique_clusters|length }} clusters (fail if more than one)
+  when: unique_clusters|length > 1
+  fail:
+    msg: Detected multiple cluster ids ({{ unique_clusters }}) on the etcd group hosts ({{ ansible_play_hosts }}), manual resolution required
+  vars:
+    unique_clusters: "{{ ansible_play_hosts | map('extract', hostvars, 'etcd_cluster_id') | select('defined') | list | unique }}"
+- name: Fail if ansible host is not found in cluster members list
+  when: etcd_member|length != 1
+  fail:
+    msg: Could not find {{ ansible_hostname }} as a cluster member
+  vars:
+    etcd_member: "{{ etcd_members_result.json.members | selectattr('name', 'equalto', ansible_hostname) | list }}"
+
+- name: Detect inactive members
+  run_once: yes
+  set_fact:
+    etcd_inactive_members: "{{ all_member_names | difference(existing_member_names) }}"
+  vars:
+    all_member_names: "{{ etcd_members_result.json.members | map(attribute='name') | list }}"
+    existing_member_names: "{{ groups['etcd_cluster_True'] | map('extract', hostvars, 'ansible_hostname') | list  }}"
+
+- name: Ensure configuration allows inactive members to be removed
+  run_once: yes
+  when: etcd_inactive_members|length > 0 and not etcd_auto_recover_degraded|bool
+  fail:
+    msg: Inactive members detected ({{ etcd_inactive_members }}), remove them first or enable etcd_auto_recover_degraded
+
+- name: Remove inactive members
+  run_once: yes
+  when: item.name not in etcd_member_names and etcd_auto_recover_degraded
+  changed_when: true
+  uri:
+    url: https://{{ etcd_client_listen_ip }}:2379/v2/members/{{ item.id }}
+    method: DELETE
+    status_code: 204
+    client_cert: "{{ etcd_cert }}"
+    client_key: "{{ etcd_private_key }}"
+    validate_certs: no
+  loop: "{{ etcd_members_result.json.members }}"
+  loop_control:
+    label: "{{ item.name }}"
+  vars:
+    etcd_member_names: "{{ groups['etcd_cluster_True'] | map('extract', hostvars, 'ansible_hostname') | list }}"

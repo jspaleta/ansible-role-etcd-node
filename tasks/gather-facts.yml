@@ -1,0 +1,25 @@
+- name: Set etcd facts
+  set_fact:
+    etcd_client_listen_ip: "{{ etcd_client_listen_ip }}"
+    etcd_peer_listen_ip: "{{ etcd_peer_listen_ip }}"
+    etcd_cert: "{{ etcd_cert }}"
+    etcd_private_key: "{{ etcd_private_key }}"
+
+- name: Check if etcd is already running
+  uri:
+    url: https://{{ etcd_client_listen_ip }}:2379/v2/stats/self
+    client_cert: "{{ etcd_cert }}"
+    client_key: "{{ etcd_private_key }}"
+    validate_certs: no
+  failed_when: false
+  register: etcd_self_result
+
+- name: Set etcd_already_in_cluster fact
+  set_fact:
+    etcd_already_in_cluster: "{{ etcd_self_result.status == 200 }}"
+- name: Group cluster members
+  group_by:
+    key: etcd_cluster_{{ etcd_already_in_cluster }}
+- name: Set etcd_cluster_exists fact
+  set_fact:
+    etcd_cluster_exists: "{{ groups['etcd_cluster_True']|default([])|length > 0 }}"

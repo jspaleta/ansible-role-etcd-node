@@ -29,7 +29,7 @@ ETCD_INITIAL_CLUSTER="
     {%- if not loop.last %},{% endif %}
   {%- endfor -%}
 "
-ETCD_INITIAL_CLUSTER_STATE="new"
+ETCD_INITIAL_CLUSTER_STATE="{{ etcd_initial_cluster_state | default ('new') }}"
 {% endif %}
 ETCD_ADVERTISE_CLIENT_URLS="{{ etcd_protocol }}://{{ etcd_client_listen_ip }}:2379"
 #ETCD_DISCOVERY=""
