@@ -6,7 +6,7 @@ $ip_prefix = "192.168.99"
 
 Vagrant.configure("2") do |config|
   config.vm.box = "jumperfly/centos-7"
-  config.vm.box_version = "7.7.2"
+  config.vm.box_version = "7.7.3"
   config.vm.box_check_update = false
   config.ssh.insert_key = false
   config.vm.provider "virtualbox" do |v|

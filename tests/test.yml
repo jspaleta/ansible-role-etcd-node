@@ -13,9 +13,11 @@
       name: jumperfly.kubelet
     when: etcd_install_mode == 'pod'
 - hosts: etcd_nodes
+  become: yes
   roles:
   - role: etcd_node
 - hosts: single_etcd_node
+  become: yes
   roles:
   - role: etcd_node
     etcd_ansible_group: single_etcd_node
