@@ -1,5 +1,5 @@
 # General configuration
-etcd_version: 3.4.3
+etcd_version: 3.4.14
 etcd_ansible_group: etcd_nodes
 etcd_ssl_enabled: yes
 etcd_install_mode: service

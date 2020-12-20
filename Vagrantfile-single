@@ -14,16 +14,13 @@ Vagrant.configure("2") do |config|
     v.cpus = 1
   end
 
-  (1..3).each do |i|
-    config.vm.define vm_name = "etcd#{i}" do |config|
-      config.vm.provision "shell", inline: <<-SHELL
-        systemctl stop firewalld
-        systemctl disable firewalld
-      SHELL
-      config.vm.hostname = vm_name
-      ip = "#{$ip_prefix}.10#{i}"
-      config.vm.network "private_network", ip: ip
-    end
+  config.vm.define vm_name = "etcd1" do |config|
+    config.vm.provision "shell", inline: <<-SHELL
+      systemctl stop firewalld
+      systemctl disable firewalld
+    SHELL
+    config.vm.hostname = vm_name
+    config.vm.network "private_network", ip: "#{$ip_prefix}.101"
   end
 
   config.vm.define "ansible" do |config|
@@ -43,7 +40,7 @@ Vagrant.configure("2") do |config|
       ansible.compatibility_mode = "2.0"
       ansible.limit = "all"
       ansible.playbook = "tests/test.yml"
-      ansible.inventory_path = "tests/inventory-vagrant"
+      ansible.inventory_path = "tests/inventory-vagrant-single"
     end
   end
 

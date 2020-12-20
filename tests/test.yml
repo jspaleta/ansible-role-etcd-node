@@ -1,4 +1,4 @@
-- hosts: etcd_nodes,single_etcd_node
+- hosts: etcd_nodes
   become: yes
   pre_tasks:
   - name: Ensure cert dir exists
@@ -16,8 +16,3 @@
   become: yes
   roles:
   - role: etcd_node
-- hosts: single_etcd_node
-  become: yes
-  roles:
-  - role: etcd_node
-    etcd_ansible_group: single_etcd_node

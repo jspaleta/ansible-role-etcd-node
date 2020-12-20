@@ -1,12 +1,8 @@
 [vagrant]
 etcd1 ansible_host=192.168.99.101
-etcd2 ansible_host=192.168.99.102
-etcd3 ansible_host=192.168.99.103
 
 [ca_nodes]
 etcd1
 
 [etcd_nodes]
 etcd1
-etcd2
-etcd3
