@@ -1,0 +1,8 @@
+##
+#  Ansible variables to apply to all hosts in the etcd_nodes group  
+##
+sensu_embedded_etcd: false
+etcd_install_mode: package
+etcd_ssl_enabled: false 
+etcd_protocol: 'http'
+etcd_auto_recover_degraded: true

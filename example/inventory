@@ -1,0 +1,21 @@
+# Example ansible inventory
+##
+# etcd_nodes is default group that defines etcd node members
+# Note:
+#   Ansible dynamic inventory can be used with cloud services
+#   to populate this group to provision hosts as part of  
+#   auto-scaling activity.    
+##
+
+[hosts]
+etcd1 ansible_host=10.0.0.1 ansible_ssh_user=centos
+etcd2 ansible_host=10.0.0.2 ansible_ssh_user=centos
+etcd3 ansible_host=10.0.0.3 ansible_ssh_user=centos
+etcd4 ansible_host=10.0.0.4 ansible_ssh_user=centos
+
+[etcd_nodes]
+etcd1
+etcd2
+etcd3
+# Uncomment etcd4 here and rerun to mimic auto-scaling scale-up
+#etcd4
