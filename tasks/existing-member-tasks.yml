@@ -1,6 +1,6 @@
 - name: Check etcd cluster members
   uri:
-    url: https://{{ etcd_client_listen_ip }}:2379/v2/members
+    url: "{{ etcd_protocol }}://{{ etcd_client_listen_ip }}:2379/v2/members"
     client_cert: "{{ etcd_cert }}"
     client_key: "{{ etcd_private_key }}"
     validate_certs: no
@@ -41,7 +41,7 @@
   when: item.name not in etcd_member_names and etcd_auto_recover_degraded
   changed_when: true
   uri:
-    url: https://{{ etcd_client_listen_ip }}:2379/v2/members/{{ item.id }}
+    url: "{{ etcd_protocol }}://{{ etcd_client_listen_ip }}:2379/v2/members/{{ item.id }}"
     method: DELETE
     status_code: 204
     client_cert: "{{ etcd_cert }}"

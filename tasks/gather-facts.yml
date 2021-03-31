@@ -7,7 +7,7 @@
 
 - name: Check if etcd is already running
   uri:
-    url: https://{{ etcd_client_listen_ip }}:2379/v2/stats/self
+    url: "{{ etcd_protocol }}://{{ etcd_client_listen_ip }}:2379/v2/stats/self"
     client_cert: "{{ etcd_cert }}"
     client_key: "{{ etcd_private_key }}"
     validate_certs: no
@@ -23,3 +23,15 @@
 - name: Set etcd_cluster_exists fact
   set_fact:
     etcd_cluster_exists: "{{ groups['etcd_cluster_True']|default([])|length > 0 }}"
+- name: Print etcd_cluster_exists
+  ansible.builtin.debug:
+    var: etcd_cluster_exists
+    verbosity: 0
+- name: Print etcd_already_in_cluster
+  ansible.builtin.debug:
+    var: etcd_already_in_cluster
+    verbosity: 0
+- name: Print etcd_self_result
+  ansible.builtin.debug:
+    var: etcd_self_result
+    verbosity: 0

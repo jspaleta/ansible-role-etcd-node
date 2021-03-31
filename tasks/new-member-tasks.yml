@@ -1,8 +1,39 @@
+- name: Set etcd_member_data
+  run_once: yes
+  set_fact:
+    etcd_member_data:
+      name: "{{ ansible_hostname }}" 
+      peerURLs:
+        - "{{ etcd_protocol }}://{{ etcd_peer_listen_ip }}:2380"
+      clientURLs:
+        - "{{ etcd_protocol }}://{{ etcd_client_listen_ip }}:2379"
+- name: Set etcd_member_data_json
+  run_once: yes
+  set_fact:
+    etcd_member_data_json: "{{ etcd_member_data | to_json }}" 
+- name: Set etcd_delegate_host
+  run_once: yes
+  set_fact:
+    etcd_delegate_host: "{{ groups['etcd_cluster_True'][0] }}"
+
+- name: Print etcd_member_data
+  ansible.builtin.debug:
+    var: etcd_member_data
+    verbosity: 0
+- name: Print etcd_member_data_json
+  ansible.builtin.debug:
+    var: etcd_member_data_json
+    verbosity: 0
+- name: Print etcd_delegate_host
+  ansible.builtin.debug:
+    var: etcd_delegate_host
+    verbosity: 0
+
 - name: Add missing member to cluster
   delegate_to: "{{ etcd_delegate_host }}"
   changed_when: true
   uri:
-    url: https://{{ etcd_delegate_vars.etcd_client_listen_ip }}:2379/v2/members
+    url: "{{ etcd_protocol }}://{{ etcd_delegate_vars.etcd_client_listen_ip }}:2379/v2/members"
     method: POST
     body: "{{ etcd_member_data | to_json }}"
     body_format: json
@@ -13,6 +44,3 @@
   vars:
     etcd_delegate_host: "{{ groups['etcd_cluster_True'][0] }}"
     etcd_delegate_vars: "{{ hostvars[etcd_delegate_host] }}"
-    etcd_member_data:
-      peerURLs:
-        - https://{{ etcd_peer_listen_ip }}:2380
