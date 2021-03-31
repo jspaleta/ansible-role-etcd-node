@@ -1,4 +1,5 @@
 - name: Configure etcd YUM repository
+  when: not sensu_embedded_etcd
   yum_repository:
     name: etcd
     description: etcd
@@ -9,4 +10,4 @@
     name: etcd-{{ etcd_version }}
     state: present
 - include_tasks: configure-etcd-service.yml
-  when: etcd_enable_service
+  when: not sensu_embedded_etcd and etcd_enable_service

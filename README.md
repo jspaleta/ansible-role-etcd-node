@@ -2,8 +2,13 @@
 Configures an etcd node, either as a standalone node or as part of a cluster.
 For a cluster, the role must be executed for all cluster members in a single play to ensure all nodes are located.
 
+ 
 SSL is enabled by default and requires certificates to be configured.
 See the [SSL Configuration](#ssl-configuration) section for more information.
+
+Based on the `jumperfly.etcd_node` role developed by jumperfly.  
+
+Long term goal is to be able to support Sensu embedded etcd deployments as well as standalone etcd clusters.
 
 ## Installation Modes
 Etcd can be installed in the following modes:

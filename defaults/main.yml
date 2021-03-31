@@ -1,4 +1,6 @@
 # General configuration
+sensu_embedded_etcd: false
+  
 etcd_version: 3.4.14
 etcd_ansible_group: etcd_nodes
 etcd_ssl_enabled: yes

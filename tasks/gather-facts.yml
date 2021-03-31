@@ -23,6 +23,7 @@
 - name: Set etcd_cluster_exists fact
   set_fact:
     etcd_cluster_exists: "{{ groups['etcd_cluster_True']|default([])|length > 0 }}"
+
 - name: Print etcd_cluster_exists
   ansible.builtin.debug:
     var: etcd_cluster_exists

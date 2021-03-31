@@ -1,4 +1,6 @@
 - name: Pull etcd image
+  when: not sensu_embedded_etcd
   docker_image: name={{ etcd_image_name }} tag={{ etcd_image_version }}
 - name: Install etcd pod
+  when: not sensu_embedded_etcd
   template: src=etcd.json.j2 dest=/etc/kubernetes/manifests/etcd.json

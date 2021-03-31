@@ -1,16 +1,20 @@
 - name: Download etcd
+  when: not sensu_embedded_etcd
   get_url:
     url: https://github.com/etcd-io/etcd/releases/download/v{{ etcd_version }}/{{ etcd_archive }}
     dest: /opt/{{ etcd_archive }}
     checksum: "{{ etcd_archive_checksum }}"
   register: download_etcd
+
 - name: Extract etcd
   unarchive:
     src: /opt/{{ etcd_archive }}
     dest: /opt/
     remote_src: yes
-  when: download_etcd.changed
+  when: not sensu_embedded_etcd and download_etcd.changed
+
 - name: Create symlinks
+  when: not sensu_embedded_etcd
   file:
     src: /opt/{{ etcd_base_name }}/{{ item }}
     dest: /usr/local/bin/{{ item }}
@@ -20,12 +24,15 @@
     - etcdctl
 
 - name: Create service file
+  when: not sensu_embedded_etcd
   copy:
     src: etcd.service
     dest: /usr/lib/systemd/system/etcd.service
   register: create_service
+
 - name: Reload service file
   command: systemctl daemon-reload
-  when: create_service.changed
+  when: not sensu_embedded_etcd and create_service.changed
+
 - include_tasks: configure-etcd-service.yml
-  when: etcd_enable_service
+  when: not sensu_embedded_etcd and etcd_enable_service

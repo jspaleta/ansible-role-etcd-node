@@ -1,9 +1,11 @@
 - name: Ensure etcd service is running
+  when: not sensu_embedded_etcd
   service:
     name: etcd
     state: started
   register: etcd_start_result
 - name: Ensure etcd service enabled
+  when: not sensu_embedded_etcd
   service:
     name: etcd
     enabled: yes

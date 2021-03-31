@@ -10,7 +10,7 @@
   when: etcd_cluster_exists and not etcd_already_in_cluster
 
 - name: Create user
-  when: etcd_user != 'root'
+  when: not sensu_embedded_etcd and etcd_user != 'root'
   block:
   - name: Ensure etcd group exists
     group:
@@ -24,15 +24,18 @@
       home: /var/lib/etcd
       system: yes
 - name: Create conf directory
+  when: not sensu_embedded_etcd 
   file:
     path: /etc/etcd
     state: directory
 - name: Set ownership of etcd key
+  when: not sensu_embedded_etcd 
   file:
     path: "{{ etcd_private_key }}"
     owner: "{{ etcd_user }}"
   when: etcd_ssl_enabled | bool
 - name: Create lib directory
+  when: not sensu_embedded_etcd 
   file:
     path: /var/lib/etcd
     state: directory
@@ -40,6 +43,7 @@
     group: "{{ etcd_user }}"
     mode: 0700
 - name: Create configuration file
+  when: not sensu_embedded_etcd 
   template:
     src: etcd.conf.j2
     dest: /etc/etcd/etcd.conf
